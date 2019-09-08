@@ -1,5 +1,5 @@
 function g = myadpmedian(f,maxw)
-%MYBWLABEL - Label connected components in 2-D binary image
+%MYADPMEDIAN - Adptive median filter
 %
 %   g = myadpmedian(f)
 %   g = myadpmedian(f,maxw)
