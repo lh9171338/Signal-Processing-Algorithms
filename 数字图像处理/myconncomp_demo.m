@@ -4,7 +4,7 @@ clc,clear;
 close all;
 
 %% ∂¡»°Õº∆¨
-filename = 'F:\MATLAB\function\src\cc.jpg';
+filename = 'E:\MATLAB\function\src\cc.jpg';
 f = imread(filename);
 figure;
 imshow(f,[]);

@@ -1,14 +1,14 @@
-function [y,e,w] = mylmsfilt(x,d,n,miu)
-%MYLMSFILT - lms filtering
+function [y,e,w] = mynlmsfilt(x,d,n,miu)
+%MYLMSFILT - nlms filtering
 %
 %   This MATLAB function applies an order-n adaptive filter to the
-%   input vector, x, basing on LMS.
+%   input vector, x, basing on Normalized NLMS.
 %   
 %   y = mylmsfilt(x,d,n,miu)
 
 %% 参数检查
 if isvector(x)
-    if n>length(x)
+    if n > length(x)
         error('自适应滤波器阶数n必须小于等于信号x的长度');
     end
 else
@@ -26,14 +26,14 @@ if n > 0
     end
 end
 % 初始化参数
-w = zeros(1,n);     %滤波器系数
-y = zeros(1,nx);    %滤波输出
-e = zeros(1,nx);    %误差
+w = zeros(1,n); %滤波器系数
+y = zeros(1,nx);  %滤波输出
+e = zeros(1,nx);  %误差
 % 滤波
 for i=1:nx
-    y(i) = w * X(:,i);          %计算滤波输出
-    e(i) = d(i) - y(i);         %计算误差
-    w = w + 2 * miu * e(i) * X(:,i)';   %更新滤波器系数 
+    y(i) = w * X(:,i);        %计算滤波输出
+    e(i) = d(i) - y(i);       %计算误差
+    w = w + miu / (eps + X(:,i)' * X(:,i)) * e(i) * X(:,i)';   %更新滤波器系数 
 end    
 
 
