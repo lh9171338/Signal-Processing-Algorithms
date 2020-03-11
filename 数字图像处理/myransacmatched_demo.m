@@ -28,14 +28,14 @@ plot(inliers(:,1),inliers(:,2),'r.');
 plot(outliers(:,1),outliers(:,2),'b.');
 
 %% ÷¥––RANSACÀ„∑®
-cb.calcModel = @calcModel;
-cb.findInliers = @findInliers;
+callbacks.calcModel = @calcModel;
+callbacks.findInliers = @findInliers;
 modelPoints = 2;
 minNumInlier = 5;
 threshold = 0.02;
 confidence = 0.99;
 maxIters = 1000;
-[models,masks] = myransacmatched(cb,points,modelPoints,nModels,...
+[models,masks] = myransacmatched(callbacks,points,modelPoints,nModels,...
     minNumInlier,threshold,confidence,maxIters);
 if isempty(models)
     disp('Failed to find the model');

@@ -1,9 +1,9 @@
-function [models,masks] = myransacmatched(cb,data,modelPoints,nModels,minNumInlier,threshold,confidence,maxIters)
+function [models,masks] = myransacmatched(callbacks,data,modelPoints,nModels,minNumInlier,threshold,confidence,maxIters)
 %MYRANSACMATCHED - RANdom SAmple Consensus algorithm of matched data
 %
-%   models = myransacmatched(cb,data,modelPoints,nModels,minNumInlier,threshold)
-%   models = myransacmatched(cb,data,modelPoints,nModels,minNumInlier,threshold,confidence)
-%   models = myransacmatched(cb,data,modelPoints,nModels,minNumInlier,threshold,confidence,maxIters)
+%   models = myransacmatched(callbacks,data,modelPoints,nModels,minNumInlier,threshold)
+%   models = myransacmatched(callbacks,data,modelPoints,nModels,minNumInlier,threshold,confidence)
+%   models = myransacmatched(callbacks,data,modelPoints,nModels,minNumInlier,threshold,confidence,maxIters)
 %   [models,masks] = myransacmatched(_)
 
 
@@ -20,8 +20,8 @@ elseif nargin < 8
 end
 
 %% 获取回调函数
-calcModel = cb.calcModel;
-findInliers = cb.findInliers;
+calcModel = callbacks.calcModel;
+findInliers = callbacks.findInliers;
 
 %% RANSAC算法
 models = [];
@@ -29,52 +29,48 @@ masks = logical([]);
 dataLen = size(data,1);
 totalMask = false(1,dataLen);
 for i=1:nModels
-    maxNumInlier = minNumInlier;
-    niters = maxIters;
     leftIndex = find(totalMask==0);
     leftDataLen = length(leftIndex);
-    if leftDataLen < modelPoints
+    if leftDataLen < minNumInlier
         break;
-    elseif leftDataLen == modelPoints
-        bestModel = calcModel(data(leftIndex,:));
-        bestMask = totalMask==0;
+    end
+    
+    maxNumInlier = minNumInlier;
+    niters = maxIters;
+    bestModel = [];
+    bestMask = logical([]);
+    for iter=1:maxIters
+        if iter > niters
+            break;
+        end
+        %% 随机选择modelPoints个数据作为内点
+        idx = randperm(leftDataLen,modelPoints);
+        idx = leftIndex(idx);
+        subData = data(idx,:);
+        %% 计算模型
+        model = calcModel(subData);
+        if isempty(model)
+            continue;
+        end
+        %% 估计符合模型的内点
+        idx = findInliers(model,data(leftIndex,:),threshold);
+        mask = false(1,dataLen);
+        mask(leftIndex(idx)) = true;
+        numInlier = sum(mask);
+        %% 更新
+        if numInlier >= maxNumInlier
+            maxNumInlier = numInlier;
+            bestModel = model;
+            bestMask = mask;
+            newniters = ceil(log(1 - confidence) / log(1 - (numInlier / leftDataLen) ^ modelPoints));
+            if newniters < niters
+                niters = newniters;
+            end
+        end
+    end
+    if ~isempty(bestModel)
+        bestModel = calcModel(data(bestMask,:));
         totalMask(bestMask) = true;
-    else
-        bestModel = [];
-        bestMask = logical([]);
-        for iter=1:maxIters
-            if iter > niters
-                break;
-            end
-            %% 随机选择modelPoints个数据作为内点
-            idx = randperm(leftDataLen,modelPoints);
-            idx = leftIndex(idx);
-            subData = data(idx,:);
-            %% 计算模型
-            model = calcModel(subData);
-            if isempty(model)
-                continue;
-            end
-            %% 估计符合模型的内点
-            idx = findInliers(model,data(leftIndex,:),threshold);
-            mask = false(1,dataLen);
-            mask(leftIndex(idx)) = true;
-            numInlier = sum(mask);
-            %% 更新
-            if numInlier >= maxNumInlier
-                maxNumInlier = numInlier;
-                bestModel = model;
-                bestMask = mask;
-                newniters = ceil(log(1 - confidence) / log(1 - (numInlier / leftDataLen) ^ modelPoints));
-                if newniters < niters
-                    niters = newniters;
-                end
-            end
-        end
-        if ~isempty(bestModel)
-            bestModel = calcModel(data(bestMask,:));
-            totalMask(bestMask) = true;
-        end
     end
     models = cat(1,models,bestModel);
     masks = cat(1,masks,bestMask);

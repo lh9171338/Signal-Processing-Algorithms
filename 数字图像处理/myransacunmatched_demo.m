@@ -29,13 +29,13 @@ plot(data1,zeros(data1Len,1),'r.');
 plot(zeros(data2Len,1),data2,'b.');
 
 %% ÷¥––RANSACÀ„∑®
-cb.calcModel = @calcModel;
-cb.findInliers = @findInliers;
+callbacks.calcModel = @calcModel;
+callbacks.findInliers = @findInliers;
 modelPoints = 1;
 minNumInlier = 5;
 threshold = 0.01;
 maxIters = 1000;
-[model,matches] = myransacunmatched(cb,[k0,[]],data1,data2,modelPoints,...
+[model,matches] = myransacunmatched(callbacks,[k0,[]],data1,data2,modelPoints,...
     minNumInlier,threshold,maxIters);
 if isempty(model)
     disp('Failed to find the model');
