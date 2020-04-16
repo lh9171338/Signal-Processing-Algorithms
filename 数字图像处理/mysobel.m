@@ -39,5 +39,3 @@ gy = gy./max(gy(:));
 if ~isempty(T)
     g = g>=T;
 end
-
-

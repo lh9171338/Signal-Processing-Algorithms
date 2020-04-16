@@ -1,7 +1,7 @@
 function model = mybayestrain(model,traindata)
 %MYBAYESTRAIN - Train bayes classifier
 %
-%   model = mybayestrain(traindata)
+%   model = mybayestrain(model,traindata)
 
 %% ²ÎÊý¼ì²é
 narginchk(2,2);

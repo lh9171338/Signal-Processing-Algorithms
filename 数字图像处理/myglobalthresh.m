@@ -4,7 +4,7 @@ function g = myglobalthresh(f,delta)
 %   g = myglobalthresh(f)
 %   g = myglobalthresh(f,delta)
 
-
+%%
 T = mean2(f);   %初始阈值
 done = false;   %迭代完成标记
 if nargin<2

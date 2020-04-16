@@ -42,7 +42,7 @@ e = zeros(nframe,nwin);
 for i=1:nframe
     % lpc·ÖÎö
     a(i,:) = mylpc(frame(i,:),p);
-    predx = filter([0;-a(i,2:end)],1,frame(i,:));
+    predx = filter([0,-a(i,2:end)],1,frame(i,:));
     e(i,:) = frame(i,:)-predx;
     amp(i) = max(abs(e(i,:)));
 end

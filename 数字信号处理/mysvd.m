@@ -48,10 +48,3 @@ else
         varargout = {Y,U,S,V};
     end
 end
-
-
-
-
-
-
-

@@ -1,7 +1,7 @@
-%mywiener_demo.m
-
+%% mywiener_demo.m
+%% 维纳滤波示例
 %%
-clc,clear all;
+clc,clear;
 close all;
 
 %% 参数
@@ -21,6 +21,7 @@ mix_signal = signal_1+0.5*signal_2;
 b = [zeros(1,20),2];
 noise_signal = filter(b,1,signal_2);
 
+%% 绘制时域波形
 figure;
 subplot(4,1,1);
 plot(t,signal_1);

@@ -21,4 +21,3 @@ g = f > K*ma;
 %% ·´ZigzagÉ¨Ãè
 g = reshape(g,N,M)';
 g(2:2:end,:) = fliplr(g(2:2:end,:));
-

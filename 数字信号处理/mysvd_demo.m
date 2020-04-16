@@ -1,6 +1,5 @@
-%mysvd_demo.m
-%% 主成分分析示例
-
+%% mysvd_demo.m
+%% SVD分解降维
 %%
 clc,clear;
 close all;

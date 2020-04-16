@@ -35,7 +35,7 @@ for i=1:nframe
     e = amp(i)*(e/max(abs(e)));
     synframe(i,:) = filter(1,a(i,:),e);
 end
-synx = deframing(synframe,0);
+synx = mydeframing(synframe,0);
 
 %% »•º”÷ÿ
 % R=1/(1-b*Z^-1)

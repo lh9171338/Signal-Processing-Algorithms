@@ -33,5 +33,3 @@ for i=1:numcc
     h = y2-y1+1;
     cc(i).BoundingBox = [x1,y1,w,h];
 end
-
-

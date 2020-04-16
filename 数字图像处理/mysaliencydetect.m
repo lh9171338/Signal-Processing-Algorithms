@@ -44,5 +44,3 @@ for i=1:length(CC)
     rects(i,3) = ceil(CC(i).BoundingBox(3));
     rects(i,4) = ceil(CC(i).BoundingBox(4));
 end
-
-

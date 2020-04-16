@@ -26,4 +26,3 @@ for i=1:numcc
         g(index) = 0; %ª“∂»÷√0
     end
 end
-

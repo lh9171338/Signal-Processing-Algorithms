@@ -1,4 +1,5 @@
-% myextendedkalman_demo.m
+%% myextendedkalman_demo.m
+%% 扩展卡尔曼滤波示例
 %%
 clc,clear;
 close all;
@@ -15,10 +16,10 @@ z = [sqrt(sum((x_gt-[0;10]).^2));sqrt(sum((x_gt-[10;0]).^2))] + 0.1 * randn(2,nx
 
 %% 绘制真实轨迹
 figure;
-plot(x_gt(1,:),x_gt(2,:));
+plot(x_gt(1,:),x_gt(2,:));title('真实轨迹');
 figure;
-subplot(2,1,1);plot(z(1,:));
-subplot(2,1,2);plot(z(2,:));
+subplot(2,1,1);plot(z(1,:));title('观测值1');
+subplot(2,1,2);plot(z(2,:));title('观测值2');
 
 %% 扩展卡尔曼滤波
 dimx = 4;
@@ -38,4 +39,3 @@ x = myextendedkalman({symf,symg,symh},x0,P0,[],z,Q,R);
 figure; 
 plot(x_gt(1,:),x_gt(2,:),'r',x(1,:),x(2,:),'g');
 legend('真实值','最优估计值'); title('位移估计');
-

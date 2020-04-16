@@ -1,5 +1,5 @@
-%%mySIR_demo.m
-
+%% mySIR_demo.m
+%% SIR粒子滤波器示例
 %%
 clc,clear;
 close all;
@@ -26,5 +26,3 @@ x = mySIR({[1,1;0,1], [0;0], [1,0]}, x0, P0, [], z ,Q, R, N);
 figure;  
 plot(t, u, 'r.-', t, z, 'b.-', t, x(1,:), 'g.-');  
 legend('真实值', '观察值', '最优估计值');
-
-

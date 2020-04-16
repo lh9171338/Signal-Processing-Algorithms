@@ -16,11 +16,11 @@ end
 %% 二值化
 % 图像1
 if ~islogical(f1)
-    f1 = im2bw(f1,graythresh(f1));
+    f1 = imbinarize(f1,graythresh(f1));
 end
 % 图像2
 if ~islogical(f2)
-    f2 = im2bw(f2,graythresh(f2));
+    f2 = imbinarize(f2,graythresh(f2));
 end
 
 %% 连通域处理：找出图像中最大的物体
@@ -30,65 +30,65 @@ Area = zeros(1,numel(CC));
 for i=1:numel(CC)
     Area(i) = CC(:).Area;
 end
-[area1,index] = max(Area);
-rect = ceil(CC(index).BoundingBox);
-xstart = rect(1);
-ystart = rect(2);
-xend = xstart+rect(3)-1;
-yend = ystart+rect(4)-1;
-obj1 = f1(ystart:yend,xstart:xend); %物体1所在矩形区域
+[area,index] = max(Area);
+centroid1 = CC(index).Centroid;
+f1 = bwareaopen(f1,area); %移除小物体
+
 % 图像2
 CC = regionprops(f2);
 Area = zeros(1,numel(CC));
 for i=1:numel(CC)
     Area(i) = CC(:).Area;
 end
-[~,index] = max(Area);
-rect = ceil(CC(index).BoundingBox);
-xstart = rect(1);
-ystart = rect(2);
-xend = xstart+rect(3)-1;
-yend = ystart+rect(4)-1;
-obj2 = f2(ystart:yend,xstart:xend); %物体2所在矩形区域
+[area,index] = max(Area);
+centroid2 = CC(index).Centroid;
+f2 = bwareaopen(f2,area); %移除小物体
 
-%% 计算缩放因子
-[rows1,cols1] = size(obj1);
-[rows2,cols2] = size(obj2);
-rowscale = rows1/rows2;
-colscale = cols1/cols2;
+%% 计算边缘到质心距离
+% 图像1
+B = bwboundaries(f1,'noholes'); %获取边缘点 
+B = B{1};
+dist1 = sqrt((B(:,2)-centroid1(1)).^2+(B(:,1)-centroid1(2)).^2); %计算距离
 
-%% 缩放并计算相似度
-%取rowscale和colscale小的作为缩放因子
-scale = min(rowscale,colscale);
-%缩放物体2
-scaledrows = round(rows2*scale); 
-scaledcols = round(cols2*scale);
-scaledobj2 = imresize(obj2,[scaledrows,scaledcols]); %scaledobj2：obj2缩放后图像
-%求scaledobj2的面积
-area2 = sum(sum(scaledobj2==1));
-%求obj1与scaledobj2中的最大面积
-maxarea = max(area1,area2);
-%缩放后的物体2相对于物体1可滑动的尺寸
-striderows = rows1-scaledrows+1;
-stridecols = cols1-scaledcols+1;
-scores = zeros(striderows,stridecols);
-%滑动遍历
-for i=1:striderows
-    for j=1:stridecols
-        % 从obj1中抠出和scaledobj2大小相同的区域
-        xstart = j;
-        ystart = i;
-        xend = xstart+scaledcols-1;
-        yend = ystart+scaledrows-1;
-        region = obj1(ystart:yend,xstart:xend);
-        %求region与scaledobj2的重叠面积
-        overlap = region & scaledobj2;
-        areaoverlap = sum(sum(overlap==1));  
-        %计算重叠度（相似度）
-        scores(i,j) = areaoverlap/maxarea;        
-    end
+% 图像2
+B = bwboundaries(f2,'noholes'); %获取边缘点 
+B = B{1};
+dist2 = sqrt((B(:,2)-centroid2(1)).^2+(B(:,1)-centroid2(2)).^2); %计算距离
+
+%% 解决伸缩问题和旋转问题
+% 插值，使点数相等
+nd1 = length(dist1);
+nd2 = length(dist2);
+if nd1 > nd2
+    x = linspace(0,1,nd2);
+    xq = linspace(0,1,nd1);
+    dist2 = interp1(x,dist2,xq,'spline')';
+else
+    x = linspace(0,1,nd1);
+    xq = linspace(0,1,nd2);
+    dist1 = interp1(x,dist1,xq,'spline')';   
 end
-%求最大相似度
-score = max(scores(:));
+np = length(dist1);
+% 对齐，解决旋转问题
+temp1 = repmat(dist1,1,np);
+temp2 = zeros(np,np);
+temp2(:,1) = dist2;
+for i=2:np
+    temp2(:,i) = [temp2(2:end,i-1);temp2(1,i-1)]; %移位
+end
+Rxyn = sum(temp1.*temp2); %图像1和图像2的互相关函数
+[~,index] = max(Rxyn);
+dist2 = temp2(:,index);
 
+%% 计算相似度
+R = corrcoef(dist1,dist2); %计算相似度，取值范围0-1
+score = R(1,2);
 
+%% 绘图
+% 使距离均值相等
+dist2 = dist2*mean(dist1)/mean(dist2);
+figure;
+plot(dist1,'r');
+hold on;
+plot(dist2,'g');
+hold off;

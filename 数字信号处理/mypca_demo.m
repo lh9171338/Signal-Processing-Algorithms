@@ -1,6 +1,5 @@
-%mypca_demo.m
-%% 主成分分析示例
-
+%% mypca_demo.m
+%% PCA降维
 %%
 clc,clear;
 close all;
@@ -46,4 +45,3 @@ figure;
 plot(X(:,1),X(:,2),'or',Z(:,1),Z(:,2),'ob');
 axis('equal');
 legend('原始数据','还原的数据');
-

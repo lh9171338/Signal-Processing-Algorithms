@@ -34,7 +34,6 @@ end
 
 %% 漫水填充
 g = f;
-
 if ch == 3  
     for i=1:3 %3个通道分别处理
         index = false(size(f));
@@ -45,6 +44,3 @@ else
     index = myregiongrow(f,seed,thresh,conn);
     g(index) = newval;
 end
-
-
-    

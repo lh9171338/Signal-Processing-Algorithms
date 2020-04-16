@@ -1,10 +1,10 @@
-function [labelMap,centroids] = mymeanshift(data,radius,distanceThresh,convergeThresh,sigma)
+function [clusters,centroids] = mymeanshift(data,radius,distanceThresh,convergeThresh,sigma)
 %MYMEANSHIFT - Mean shift clustering algorithm 
 %
-%   labelMap = mymeanshift(data,radius,distanceThresh)
-%   labelMap = mymeanshift(data,radius,distanceThresh,convergeThresh)
-%   labelMap = mymeanshift(data,radius,distanceThresh,convergeThresh,sigma)
-%   [labelMap,centroids] = mymeanshift(__)
+%   clusters = mymeanshift(data,radius,distanceThresh)
+%   clusters = mymeanshift(data,radius,distanceThresh,convergeThresh)
+%   clusters = mymeanshift(data,radius,distanceThresh,convergeThresh,sigma)
+%   [clusters,centroids] = mymeanshift(__)
 
 
 %% 参数检查
@@ -69,14 +69,28 @@ for i=1:nData
     
     %% 为所有点分配类别
     frequencys = vertcat(clusters.Frequency);
-    [~,labelMap] = max(frequencys,[],1);
-    labelMap = labelMap';
+    [~,labels] = max(frequencys,[],1);
+    labels = labels';
     
     %% 更新聚类中心
     centroids = vertcat(clusters.Centroid);
     for j=1:length(clusters)
-        clusterData = data(labelMap==j,:);
+        clusterData = data(labels==j,:);
         centroids(j,:) = mean(clusterData,1);
     end
 end
-       
+
+%% 保存为clusters
+clusters = [];
+nClusters = max(labels);
+numInliers = zeros(nClusters,1);
+for i=1:nClusters
+    indexes = find(labels == i);
+    clusters = cat(1,clusters,{indexes});
+    numInliers(i) = length(indexes);
+end
+
+%% 排序
+[~,indexes] = sort(numInliers,'descend');
+clusters = clusters(indexes);
+centroids = centroids(indexes,:);

@@ -35,4 +35,3 @@ for i = 1:n
     end
 end
 dist = D(n+1,m+1);
-

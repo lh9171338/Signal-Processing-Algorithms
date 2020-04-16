@@ -1,16 +1,19 @@
-%filerename.m
+% filerename.m
+% 文件批量重命名
+%%
 clear,clc;
-%%
-src = uigetdir(pwd,'源目录');
-dst = uigetdir(pwd,'目标目录');
-file_list = dir(strcat(src,'\*.jpg'));
-file_num = length(file_list);
-%%
-for i = 1:file_num
-    img_src_name = [src,'\',file_list(i).name];
-    %pos = strfind(file_list(i).name, '.');
-    %id = str2double(file_list(i).name(6:pos(1)-1));
-    img_dst_name = [dst,'\',num2str(id,'%09d'),'.png'];
-    movefile(img_src_name, img_dst_name);
-    fprintf('已处理文件数量：%d\n',i);
+close all;
+
+%% 路径
+srcPath = uigetdir(pwd,'源目录');
+dstPath = uigetdir(pwd,'目标目录');
+fileList = dir(strcat(src,'\*.jpg'));
+numFiles = length(fileList);
+
+%% 批量处理文件
+for i=1:numFiles
+    srcFilename = [srcPath,'\',fileList(i).name];
+    dstFilename = [dstPath,'\',num2str(i,'%06d'),'.jpg'];
+    movefile(srcFilename, dstFilename);
+    fprintf('进度：%d/%d\n',i,numFiles);
 end

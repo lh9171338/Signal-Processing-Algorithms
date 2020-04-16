@@ -1,70 +1,65 @@
-%jpg2mif.m
-%图像转.mif文件
+% jpg2mif.m
+% 图像转.mif文件
 %%
 clc,clear;
 close all;
 
 %% 参数
-MifFile = 'src.mif';
-ImageFile = '../src/cc.jpg';
+mifFilename = '../src/image/cc.mif';
+imageFilename = '../src/image/cc.jpg';
 rows = [];
 cols = [];
-% rows = 256;
-% cols = 256;
-data_width = 24;
+dataWidth = 24;
 
 %% 读取图片
-f = imread(ImageFile);
+image = imread(imageFilename);
 if isempty(rows)
-    [rows,cols,~] = size(f);
+    [rows,cols,~] = size(image);
 else
-    f = imresize(f,[rows,cols]);
+    image = imresize(image,[rows,cols]);
 end
-figure;
-imshow(f);
+figure;imshow(image);
 title('原始图像');
 
 %% 图像处理
-% f = rgb2gray(f);
-% figure;
-% imshow(f);
+% image = rgb2gray(image);
+% figure;imshow(image);
 % title('灰度图');
 
 %% 数据
-switch(data_width)
-    case 1 %二值图
-        data = logical(f);
-    case 8 %灰度图
-        data = uint8(f);
-    case 16 %16位彩色图
-        f = double(f);
-        R = fix(f(:,:,1)/8);
-        G = fix(f(:,:,2)/4);
-        B = fix(f(:,:,3)/8);
-        data = uint16(R*32*64+G*32+B);
-    case 24  %24位彩色图
-        f = double(f);
-        R = f(:,:,1);
-        G = f(:,:,2);
-        B = f(:,:,3);
-        data = uint32(R*256*256+G*256+B);      
+switch(dataWidth)
+    case 1 % 二值图
+        data = logical(image);
+    case 8 % 灰度图
+        data = uint8(image);
+    case 16 % 16位彩色图
+        image = double(image);
+        R = fix(image(:,:,1) / 8);
+        G = fix(image(:,:,2) / 4);
+        B = fix(image(:,:,3) / 8);
+        data = uint16(R * 32 * 64 + G * 32 + B);
+    case 24  % 24位彩色图
+        image = double(image);
+        R = image(:,:,1);
+        G = image(:,:,2);
+        B = image(:,:,3);
+        data = uint32(R * 256 * 256 + G * 256 + B);      
     otherwise
-        error('data_width数值有误');
+        error('dataWidth数值有误');
 end
 
 %% 写文件
-data_depth = rows * cols;
-fid = fopen(MifFile,'w');
-fprintf(fid,'width=%d;\n',data_width);
-fprintf(fid,'depth=%d;\n',data_depth);
+dataDepth = rows * cols;
+fid = fopen(mifFilename,'w');
+fprintf(fid,'width=%d;\n',dataWidth);
+fprintf(fid,'depth=%d;\n',dataDepth);
 fprintf(fid,'address_radix=uns;\n');
 fprintf(fid,'data_radix=hex;\n');
 fprintf(fid,'Content Begin\n');
-for y=0:rows-1
-    for x=0:cols-1        fprintf(fid,'%d:%x;\n',y*cols+x,data(y+1,x+1));
-    end
-end
+indexes = 0:dataDepth-1;
+data = data';    
+fprintf(fid,'%d:%x;\n',[indexes;data(:)']);
 fprintf(fid,'end;');
-fclose(fid);%关闭文件
+fclose(fid); % 关闭文件
 
 

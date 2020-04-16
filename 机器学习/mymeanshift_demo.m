@@ -1,5 +1,6 @@
 % mymeanshift_demo.m
-%% 均值漂移聚类示例
+% 均值漂移聚类示例
+%%
 clc,clear;
 close all;
 
@@ -29,13 +30,13 @@ radius = 2;
 distanceThresh = 2;
 convergeThresh = 1e-2;
 sigma = [];
-[labelMap,centroids] = mymeanshift(points,radius,distanceThresh,convergeThresh,sigma);
+[clusters,centroids] = mymeanshift(points,radius,distanceThresh,convergeThresh,sigma);
 
 %% 绘制结果
-nModels = max(labelMap);
+nModels = length(clusters);
 for i=1:nModels
     color = rand(1,3);
-    indexes = labelMap == i;
+    indexes = clusters{i};
     plot(points(indexes,1),points(indexes,2),'o','Color',color,'MarkerSize',10);
     plot(centroids(i,1),centroids(i,2),'x','Color',color,...
         'MarkerSize',20,'MarkerFaceColor',color);

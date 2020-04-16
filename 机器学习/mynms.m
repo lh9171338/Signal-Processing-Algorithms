@@ -70,4 +70,3 @@ while ~isempty(I)
 end
 pick = pick(1:(counter-1));
 resbboxes = bboxes(pick,:);
-

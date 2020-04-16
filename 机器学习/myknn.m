@@ -3,6 +3,7 @@ function class = myknn(test,data,label,k)
 %
 %   class = myknn(test,data,label,k)
 
+%%
 rows = size(data,1); %计算训练样本(data)个数
 test = repmat(test,rows,1); %将测试样本(test)扩展为rows行
 diffMat = test-data; %将测试样本(test)与所有训练样本(data)作差

@@ -38,5 +38,3 @@ for i=1:nx
     P = lambda^(-1) * (eye(n) - K * X(:,i)') * P;
     w = w + K' * e(i);        %更新滤波器系数 
 end    
-
-

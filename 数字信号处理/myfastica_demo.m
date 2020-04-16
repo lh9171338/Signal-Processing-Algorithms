@@ -1,6 +1,5 @@
-%myfastica_demo.m
-%% 独立成分分析示例
-
+%% myfastica_demo.m
+%% Fast ICA示例
 %%
 clc,clear;
 close all;
@@ -61,5 +60,3 @@ subplot(4,1,3);
 plot(t,y(3,:));
 subplot(4,1,4);
 plot(t,y(4,:));
-
-

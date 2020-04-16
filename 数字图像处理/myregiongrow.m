@@ -36,4 +36,3 @@ end
 %% ÖÖ×ÓÌî³ä
 g = myseedfill(bw,seed,conn);
 % g = imreconstruct(seed,bw);
-

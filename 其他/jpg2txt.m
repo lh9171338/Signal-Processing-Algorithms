@@ -1,60 +1,54 @@
-%jpg2txt.m
-%图像转文本文件
+% jpg2txt.m
+% 图像转文本文件
 %%
 clc,clear;
 close all;
 
 %% 参数
-TextFile = 'src.txt';
-ImageFile = '../src/cc.jpg';
+textFilename = '../src/image/cc.txt';
+imageFilename = '../src/image/cc.jpg';
 rows = [];
 cols = [];
-% rows = 256;
-% cols = 256;
-data_width = 24;
+dataWidth = 24;
 
 %% 读取图片
-f = imread(ImageFile);
+image = imread(imageFilename);
 if isempty(rows)
-    [rows,cols,~] = size(f);
+    [rows,cols,~] = size(image);
 else
-    f = imresize(f,[rows,cols]);
+    image = imresize(image,[rows,cols]);
 end
-figure;
-imshow(f);
+figure;imshow(image);
 title('原始图像');
 
 %% 图像处理
-% f = rgb2gray(f);
-% figure;
-% imshow(f);
+% image = rgb2gray(image);
+% figure;imshow(image);
 % title('灰度图');
 
 %% 数据
-switch(data_width)
-    case 1 %二值图
-        data = logical(f);
-    case 8 %灰度图
-        data = uint8(f);
-    case 16 %16位彩色图
-        f = double(f);
-        R = fix(f(:,:,1)/8);
-        G = fix(f(:,:,2)/4);
-        B = fix(f(:,:,3)/8);
-        data = uint16(R*32*64+G*32+B);
-    case 24  %24位彩色图
-        f = double(f);
-        R = f(:,:,1);
-        G = f(:,:,2);
-        B = f(:,:,3);
-        data = uint32(R*256*256+G*256+B);      
+switch(dataWidth)
+    case 1 % 二值图
+        data = logical(image);
+    case 8 % 灰度图
+        data = uint8(image);
+    case 16 % 16位彩色图
+        image = double(image);
+        R = fix(image(:,:,1) / 8);
+        G = fix(image(:,:,2) / 4);
+        B = fix(image(:,:,3) / 8);
+        data = uint16(R * 32 * 64 + G * 32 + B);
+    case 24  % 24位彩色图
+        image = double(image);
+        R = image(:,:,1);
+        G = image(:,:,2);
+        B = image(:,:,3);
+        data = uint32(R * 256 * 256 + G * 256 + B);      
     otherwise
-        error('data_width数值有误');
+        error('dataWidth数值有误');
 end
 
 %% 写文件
-fid = fopen(TextFile,'w');
+fid = fopen(textFilename,'w');
 fprintf(fid,'%u\n',data');
-fclose(fid);%关闭文件
-
-
+fclose(fid); % 关闭文件

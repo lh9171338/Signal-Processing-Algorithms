@@ -17,5 +17,3 @@ end
 
 %% 计算局部均值
 m = imfilter(f,nhood,'replicate');
-
-

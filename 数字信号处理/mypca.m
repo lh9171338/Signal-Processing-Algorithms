@@ -52,10 +52,3 @@ else
         varargout = {Y,V,D};
     end
 end
-
-
-
-
-
-
-

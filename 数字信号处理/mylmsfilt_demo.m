@@ -1,7 +1,7 @@
-%mylmsfilt_demo.m
-
+%% mylmsfilt_demo.m
+%% LMS自适应滤波
 %%
-clc,clear all;
+clc,clear;
 close all;
 
 %% 参数
@@ -20,8 +20,8 @@ signal_2 = 0.5*sin(2*pi*f2*t);    %正弦波
 mix_signal = signal_1+signal_2;
 b = [zeros(1,25),1];
 noise_signal = filter(b,1,signal_2);
-% noise_signal = 0.5*randn(1,length(t));
 
+%% 绘制时域波形
 figure;
 subplot(4,1,1);
 plot(t,signal_1);
@@ -33,8 +33,7 @@ subplot(4,1,4);
 plot(t,noise_signal);
 
 %% 自适应滤波
-[y,e,w] = mylmsfilt(noise_signal,mix_signal,200,0.0005);
-% y = mix_signal-filter(w,1,noise_signal);
+[~,e,w] = mylmsfilt(noise_signal,mix_signal,200,0.0005);
 figure;
 subplot(2,1,1)
 plot(t,signal_1,'r',t,e,'g');
@@ -42,6 +41,6 @@ plot(t,signal_1,'r',t,e,'g');
 %% 低通滤波
 Wc = 2*100/fs;   
 [b,a] = butter(4,Wc);
-y = filter(b,a,y);
+y = filter(b,a,e);
 subplot(2,1,2)
 plot(t,signal_1,'r',t,y,'g');

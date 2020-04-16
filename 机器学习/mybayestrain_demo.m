@@ -1,7 +1,7 @@
-%mybayestrain_demo.m
-%贝叶斯分类器示例
+% mybayestrain_demo.m
+% 贝叶斯分类器示例
 %%
-clc,clear all;
+clc,clear;
 close all;
 
 %% 样本
@@ -31,9 +31,9 @@ traindata(6).class = 'concussion';
 traindata(6).feature = {2,4};
 
 %% 训练
-model = mybayestrain(traindata);
+model = mybayesinit(traindata);
+model = mybayestrain(model,traindata);
 
 %% 分类
 test.feature = {1,3};
 [class,posteriori] = mybayesclassify(model,test);
-

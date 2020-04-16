@@ -1,10 +1,11 @@
-%myconncomp_demo.m
-%连通域处理示例
+%% myconncomp_demo.m
+%% 连通域处理示例
+%%
 clc,clear;
 close all;
 
 %% 读取图片
-filename = 'E:\MATLAB\function\src\cc.jpg';
+filename = '../src/image/cc.jpg';
 f = imread(filename);
 figure;
 imshow(f,[]);
@@ -12,13 +13,13 @@ imshow(f,[]);
 %% 二值化
 f2 = rgb2gray(f);
 thresh = graythresh(f2);
-f2 = im2bw(f2,thresh);
+f2 = imbinarize(f2,thresh);
 figure;
 imshow(f2,[]);
 
 %% 连通域检测
 label = mybwlabel(f2,4);
-f3 = label*255/max(label(:));
+f3 = label * 255 / max(label(:));
 figure;
 imshow(f3,[]);
 
@@ -55,4 +56,3 @@ imshow(f5,[]);
 f6 = mybwareaopen(f2,500);
 figure;
 imshow(f6,[]);
-
